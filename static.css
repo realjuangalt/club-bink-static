@@ -1,10 +1,16 @@
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
+  overflow-x: hidden;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Prevent background scroll when mobile menu is open */
+body.mobile-menu-open {
+  overflow: hidden;
 }
 
 /* Subtle focus style for keyboard users */
@@ -23,27 +29,73 @@ td {
   white-space: nowrap;
 }
 
-/* Dual-thumb range slider approximation: two range inputs stacked */
-.dual-range {
-  height: 1.5rem;
+/* Contained scroll for table on small screens */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }
 
-.dual-range input[type="range"] {
+/* Mobile nav: ensure it displays when [hidden] is removed */
+.mobile-nav[hidden] {
+  display: none;
+}
+
+.mobile-nav:not([hidden]) {
+  display: block;
+}
+
+/* Custom dual-thumb time range: track + two thumbs; native inputs hidden */
+.dual-range {
+  height: 1.5rem;
+  position: relative;
+}
+
+/* Hide native range inputs; they still hold values for the chart logic */
+.dual-range-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  margin: -1px;
+  overflow: hidden;
+}
+
+/* Visible track bar (gradient applied in JS on .dual-range-track-bar or parent) */
+.dual-range-track-bar {
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;
+  background: #4b5563;
+  pointer-events: none;
 }
 
-/* Make the "track" slider visually subtle so it looks like one line */
-.dual-range-track {
-  opacity: 0.6;
-}
-
-/* Top slider only shows its thumb (track mostly hidden) */
+/* Draggable thumb – only this hit area moves the start or end */
 .dual-range-thumb {
-  background: transparent;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f97316;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  cursor: grab;
+  padding: 0;
+  z-index: 2;
+  touch-action: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dual-range-thumb:hover {
+  background: #ff9000;
+}
+
+.dual-range-thumb:active {
+  cursor: grabbing;
 }
 
 

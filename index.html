@@ -27,8 +27,8 @@
     <header
       class="border-b border-neutral-800 bg-black/60 backdrop-blur sticky top-0 z-20"
     >
-      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <a href="#top" class="flex items-center gap-2">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <a href="#top" class="flex items-center gap-2 shrink-0">
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bink_logo-QKKUxKCfntVUsNeqrqkGv1jipBV2er.webp"
             alt="Club Bink Logo"
@@ -36,7 +36,7 @@
           />
           <span class="font-semibold tracking-tight">Club Bink</span>
         </a>
-        <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300" aria-label="Main">
           <a href="#evangelists" class="hover:text-binkOrange">Evangelists</a>
           <a href="#stackers" class="hover:text-binkOrange">Stackers</a>
           <a href="#dca-calculator" class="hover:text-binkOrange">DCA Calculator</a>
@@ -45,11 +45,36 @@
         </nav>
         <a
           href="#evangelist-sign-up"
-          class="hidden md:inline-flex items-center gap-2 rounded-md bg-binkOrange px-4 py-2 text-sm font-medium text-black hover:bg-[#FF9000] transition-colors"
+          class="hidden md:inline-flex items-center gap-2 rounded-md bg-binkOrange px-4 py-2 text-sm font-medium text-black hover:bg-[#FF9000] transition-colors shrink-0"
         >
           Become an Evangelist
         </a>
+        <button
+          type="button"
+          id="mobile-menu-btn"
+          class="md:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-binkOrange"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          aria-label="Open menu"
+        >
+          <svg id="mobile-menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="mobile-menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
+      <nav id="mobile-nav" class="mobile-nav md:hidden" aria-label="Mobile menu" hidden>
+        <div class="max-w-6xl mx-auto px-4 py-4 space-y-1 border-t border-neutral-800 bg-binkBg/95 backdrop-blur">
+          <a href="#evangelists" class="mobile-nav-link block py-3 px-3 rounded-md text-gray-300 hover:text-white hover:bg-white/10">Evangelists</a>
+          <a href="#stackers" class="mobile-nav-link block py-3 px-3 rounded-md text-gray-300 hover:text-white hover:bg-white/10">Stackers</a>
+          <a href="#dca-calculator" class="mobile-nav-link block py-3 px-3 rounded-md text-gray-300 hover:text-white hover:bg-white/10">DCA Calculator</a>
+          <a href="#stacker-dashboard" class="mobile-nav-link block py-3 px-3 rounded-md text-gray-300 hover:text-white hover:bg-white/10">Stacker Dashboard</a>
+          <a href="#team" class="mobile-nav-link block py-3 px-3 rounded-md text-gray-300 hover:text-white hover:bg-white/10">Team</a>
+          <a href="#evangelist-sign-up" class="mobile-nav-link block mt-2 py-3 px-3 rounded-md text-center font-medium bg-binkOrange text-black hover:bg-[#FF9000]">Become an Evangelist</a>
+        </div>
+      </nav>
     </header>
 
     <main id="top" class="max-w-6xl mx-auto px-4 py-10 md:py-16">
@@ -368,7 +393,7 @@
           past.
         </p>
         <div
-          class="bg-binkCard rounded-lg border border-neutral-800 p-4 sm:p-6 lg:p-8 space-y-6"
+          class="bg-binkCard rounded-lg border border-neutral-800 p-4 sm:p-6 lg:p-8 space-y-6 min-w-0 overflow-x-hidden"
         >
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="space-y-2">
@@ -404,24 +429,30 @@
             </div>
           </div>
 
-          <div class="space-y-2">
-            <div
-              id="time-range-label"
-              class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm font-medium text-gray-200"
+          <div class="relative bg-binkCardAlt rounded-lg border border-neutral-800 p-3 sm:p-4">
+            <canvas id="dca-chart" class="w-full h-[320px]"></canvas>
+            <button
+              type="button"
+              id="scale-toggle"
+              class="absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-medium border border-neutral-600 text-gray-200 bg-binkCard/90 hover:bg-binkCardAlt focus:outline-none focus:ring-2 focus:ring-binkOrange"
+              aria-label="Toggle chart scale"
             >
-              <span>Time Range</span>
-              <span id="time-range-summary" class="mt-1 sm:mt-0 text-xs text-gray-400">
-                Loading…
-              </span>
-            </div>
-            <div class="relative mt-1 dual-range">
+              Log
+            </button>
+          </div>
+
+          <div class="space-y-2 mt-2 -mb-1">
+            <div class="relative dual-range" role="group" aria-label="Time range">
+              <!-- Hidden inputs keep the existing value/chart logic; only our thumbs are draggable -->
               <input
                 id="time-range-start"
                 type="range"
                 min="0"
                 max="100"
                 value="0"
-                class="w-full accent-binkOrange dual-range-track"
+                class="dual-range-input-hidden"
+                tabindex="-1"
+                aria-hidden="true"
               />
               <input
                 id="time-range-end"
@@ -429,31 +460,23 @@
                 min="0"
                 max="100"
                 value="100"
-                class="w-full accent-binkOrange dual-range-thumb"
+                class="dual-range-input-hidden"
+                tabindex="-1"
+                aria-hidden="true"
               />
+              <div id="dual-range-track" class="dual-range-track-bar"></div>
+              <button type="button" id="dual-range-thumb-start" class="dual-range-thumb" aria-label="Start of time range"></button>
+              <button type="button" id="dual-range-thumb-end" class="dual-range-thumb" aria-label="End of time range"></button>
             </div>
-          </div>
-
-          <div class="flex items-center justify-end gap-3 text-xs sm:text-sm">
-            <span class="text-gray-400">Scale:</span>
-            <button
-              type="button"
-              id="scale-linear"
-              class="px-3 py-1 rounded-full border border-neutral-600 text-gray-200 text-xs sm:text-sm bg-binkCardAlt"
+            <div
+              id="time-range-label"
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm font-medium text-gray-200 mt-1"
             >
-              Linear
-            </button>
-            <button
-              type="button"
-              id="scale-log"
-              class="px-3 py-1 rounded-full border border-transparent text-gray-400 text-xs sm:text-sm hover:border-neutral-600"
-            >
-              Log
-            </button>
-          </div>
-
-          <div class="bg-binkCardAlt rounded-lg border border-neutral-800 p-3 sm:p-4">
-            <canvas id="dca-chart" class="w-full h-[320px]"></canvas>
+              <span>Time Range</span>
+              <span id="time-range-summary" class="mt-1 sm:mt-0 text-xs text-gray-400">
+                Loading…
+              </span>
+            </div>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
@@ -850,6 +873,38 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./static.js"></script>
     <script src="./dca-calculator.js"></script>
+    <script>
+      (function () {
+        var btn = document.getElementById("mobile-menu-btn");
+        var nav = document.getElementById("mobile-nav");
+        var iconOpen = document.getElementById("mobile-menu-icon-open");
+        var iconClose = document.getElementById("mobile-menu-icon-close");
+        if (!btn || !nav) return;
+        function openMenu() {
+          nav.removeAttribute("hidden");
+          btn.setAttribute("aria-expanded", "true");
+          btn.setAttribute("aria-label", "Close menu");
+          if (iconOpen) iconOpen.classList.add("hidden");
+          if (iconClose) iconClose.classList.remove("hidden");
+          document.body.classList.add("mobile-menu-open");
+        }
+        function closeMenu() {
+          nav.setAttribute("hidden", "");
+          btn.setAttribute("aria-expanded", "false");
+          btn.setAttribute("aria-label", "Open menu");
+          if (iconOpen) iconOpen.classList.remove("hidden");
+          if (iconClose) iconClose.classList.add("hidden");
+          document.body.classList.remove("mobile-menu-open");
+        }
+        function toggleMenu() {
+          if (nav.hasAttribute("hidden")) openMenu(); else closeMenu();
+        }
+        btn.addEventListener("click", toggleMenu);
+        nav.querySelectorAll(".mobile-nav-link").forEach(function (link) {
+          link.addEventListener("click", closeMenu);
+        });
+      })();
+    </script>
   </body>
   </html>
 

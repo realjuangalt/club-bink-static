@@ -54,10 +54,12 @@ function initDcaCalculator(priceData) {
   const frequencyInput = document.getElementById("investment-frequency");
   const timeRangeStartInput = document.getElementById("time-range-start");
   const timeRangeEndInput = document.getElementById("time-range-end");
+  const dualRangeTrack = document.getElementById("dual-range-track");
+  const dualThumbStart = document.getElementById("dual-range-thumb-start");
+  const dualThumbEnd = document.getElementById("dual-range-thumb-end");
   const timeRangeLabel = document.getElementById("time-range-label");
   const timeRangeSummary = document.getElementById("time-range-summary");
-  const scaleLinearBtn = document.getElementById("scale-linear");
-  const scaleLogBtn = document.getElementById("scale-log");
+  const scaleToggleBtn = document.getElementById("scale-toggle");
 
   const metricInvested = document.getElementById("metric-invested");
   const metricValue = document.getElementById("metric-value");
@@ -69,6 +71,9 @@ function initDcaCalculator(priceData) {
     !frequencyInput ||
     !timeRangeStartInput ||
     !timeRangeEndInput ||
+    !dualRangeTrack ||
+    !dualThumbStart ||
+    !dualThumbEnd ||
     !timeRangeLabel ||
     !timeRangeSummary ||
     !metricInvested ||
@@ -111,7 +116,7 @@ function initDcaCalculator(priceData) {
     const endPct = (endIdx / maxIndex) * 100;
     const gray = "#4b5563"; // tailwind gray-700
     const orange = "#f97316"; // approx bink orange
-    timeRangeStartInput.style.background = `linear-gradient(to right,
+    dualRangeTrack.style.background = `linear-gradient(to right,
       ${gray} 0%,
       ${gray} ${startPct}%,
       ${orange} ${startPct}%,
@@ -119,6 +124,15 @@ function initDcaCalculator(priceData) {
       ${gray} ${endPct}%,
       ${gray} 100%
     )`;
+  }
+
+  function updateThumbPositions() {
+    const startIdx = parseInt(timeRangeStartInput.value || "0", 10) || 0;
+    const endIdx = parseInt(timeRangeEndInput.value || String(maxIndex), 10);
+    const startPct = maxIndex > 0 ? (startIdx / maxIndex) * 100 : 0;
+    const endPct = maxIndex > 0 ? (endIdx / maxIndex) * 100 : 100;
+    dualThumbStart.style.left = startPct + "%";
+    dualThumbEnd.style.left = endPct + "%";
   }
 
   function updateTimeRangeLabel(startIdx, endIdx) {
@@ -138,6 +152,7 @@ function initDcaCalculator(priceData) {
       month: "short",
     })} • ${formatTimeRange(Math.max(months, 1))}`;
     updateTrackBackground(startIdx, endIdx);
+    updateThumbPositions();
   }
 
   // Default view: from ~2014 (or earliest available) to the latest point.
@@ -157,6 +172,16 @@ function initDcaCalculator(priceData) {
   const canvas = document.getElementById("dca-chart");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
+
+  // Tooltip positioner: follow the mouse (with small offset so it doesn't sit under cursor)
+  if (typeof Chart !== "undefined" && Chart.registry) {
+    const tooltipPlugin = Chart.registry.getPlugin("tooltip");
+    if (tooltipPlugin && !tooltipPlugin.positioners.mouse) {
+      tooltipPlugin.positioners.mouse = function (elements, eventPosition) {
+        return { x: eventPosition.x, y: eventPosition.y - 12 };
+      };
+    }
+  }
 
   // Chart.js expects "linear" or "logarithmic" here.
   let currentScale = "linear";
@@ -220,6 +245,8 @@ function initDcaCalculator(priceData) {
           tension: 0.25,
           yAxisID: "y",
           pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHitRadius: 20,
         },
         {
           label: "Portfolio Value",
@@ -230,6 +257,8 @@ function initDcaCalculator(priceData) {
           tension: 0.25,
           yAxisID: "y1",
           pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHitRadius: 20,
         },
         {
           label: "Total Invested",
@@ -240,6 +269,8 @@ function initDcaCalculator(priceData) {
           tension: 0.25,
           yAxisID: "y1",
           pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHitRadius: 20,
         },
       ],
     },
@@ -253,11 +284,57 @@ function initDcaCalculator(priceData) {
           },
         },
         tooltip: {
+          enabled: true,
+          mode: "index",
+          intersect: false,
+          position: "mouse",
+          backgroundColor: "rgba(30, 41, 59, 0.95)",
+          borderColor: "rgba(148, 163, 184, 0.4)",
+          borderWidth: 1,
+          titleColor: "#e2e8f0",
+          bodyColor: "#cbd5e1",
+          padding: 10,
           callbacks: {
+            title(tooltipItems) {
+              if (tooltipItems.length && tooltipItems[0].label) return tooltipItems[0].label;
+              return "";
+            },
             label(context) {
               const label = context.dataset.label || "";
               const value = context.parsed.y;
               return `${label}: ${formatCurrency(value)}`;
+            },
+            labelTextColor(context) {
+              const label = context.dataset.label || "";
+              if (label === "BTC Price") return "#f97316"; // orange
+              if (label === "Total Invested") return "#4A90E2"; // blue
+              if (label === "Portfolio Value") return "#22c55e"; // green
+              return "#cbd5e1";
+            },
+            labelColor(context) {
+              const label = context.dataset.label || "";
+              if (label === "BTC Price") {
+                return {
+                  borderColor: "#f97316",
+                  backgroundColor: "rgba(249,115,22,0.25)",
+                };
+              }
+              if (label === "Total Invested") {
+                return {
+                  borderColor: "#4A90E2",
+                  backgroundColor: "rgba(74,144,226,0.25)",
+                };
+              }
+              if (label === "Portfolio Value") {
+                return {
+                  borderColor: "#22c55e",
+                  backgroundColor: "rgba(34,197,94,0.25)",
+                };
+              }
+              return {
+                borderColor: "#cbd5e1",
+                backgroundColor: "rgba(148,163,184,0.25)",
+              };
             },
           },
         },
@@ -276,7 +353,7 @@ function initDcaCalculator(priceData) {
           type: currentScale,
           position: "left",
           ticks: {
-            color: "#9ca3af",
+            color: "#f97316",
             callback(value) {
               return `$${Number(value).toLocaleString()}`;
             },
@@ -376,17 +453,64 @@ function initDcaCalculator(priceData) {
   timeRangeStartInput.addEventListener("input", () => handleRangeChange("start"));
   timeRangeEndInput.addEventListener("input", () => handleRangeChange("end"));
 
-  if (scaleLinearBtn && scaleLogBtn) {
-    scaleLinearBtn.addEventListener("click", () => {
-      currentScale = "linear";
-      scaleLinearBtn.classList.add("bg-binkCardAlt", "border-neutral-600");
-      scaleLogBtn.classList.remove("bg-binkCardAlt", "border-neutral-600");
-      rerenderDcaChart();
-    });
-    scaleLogBtn.addEventListener("click", () => {
-      currentScale = "logarithmic";
-      scaleLogBtn.classList.add("bg-binkCardAlt", "border-neutral-600");
-      scaleLinearBtn.classList.remove("bg-binkCardAlt", "border-neutral-600");
+  // Custom dual-thumb drag: only the thumb you grab moves (track clicks do nothing)
+  let dragging = null; // 'start' | 'end' | null
+  let capturingThumb = null; // element that has setPointerCapture
+
+  function clientXToIndex(clientX) {
+    const rect = dualRangeTrack.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round((pct * maxIndex));
+  }
+
+  function onPointerMove(e) {
+    if (!dragging) return;
+    const index = clientXToIndex(e.clientX);
+    if (dragging === "start") {
+      timeRangeStartInput.value = String(index);
+      timeRangeStartInput.dispatchEvent(new Event("input", { bubbles: true }));
+    } else {
+      timeRangeEndInput.value = String(index);
+      timeRangeEndInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  }
+
+  function onPointerUp(e) {
+    dragging = null;
+    if (capturingThumb && capturingThumb.releasePointerCapture && e.pointerId != null) {
+      try { capturingThumb.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    capturingThumb = null;
+    document.removeEventListener("pointermove", onPointerMove);
+    document.removeEventListener("pointerup", onPointerUp);
+  }
+
+  dualThumbStart.addEventListener("pointerdown", function (e) {
+    e.preventDefault();
+    dragging = "start";
+    capturingThumb = dualThumbStart;
+    dualThumbStart.setPointerCapture(e.pointerId);
+    document.addEventListener("pointermove", onPointerMove);
+    document.addEventListener("pointerup", onPointerUp, { once: true });
+  });
+
+  dualThumbEnd.addEventListener("pointerdown", function (e) {
+    e.preventDefault();
+    dragging = "end";
+    capturingThumb = dualThumbEnd;
+    dualThumbEnd.setPointerCapture(e.pointerId);
+    document.addEventListener("pointermove", onPointerMove);
+    document.addEventListener("pointerup", onPointerUp, { once: true });
+  });
+
+  if (scaleToggleBtn) {
+    function updateScaleToggleLabel() {
+      scaleToggleBtn.textContent = currentScale === "linear" ? "Log" : "Linear";
+    }
+    updateScaleToggleLabel();
+    scaleToggleBtn.addEventListener("click", () => {
+      currentScale = currentScale === "linear" ? "logarithmic" : "linear";
+      updateScaleToggleLabel();
       rerenderDcaChart();
     });
   }
