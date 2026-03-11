@@ -23,3 +23,27 @@ td {
   white-space: nowrap;
 }
 
+/* Dual-thumb range slider approximation: two range inputs stacked */
+.dual-range {
+  height: 1.5rem;
+}
+
+.dual-range input[type="range"] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Make the "track" slider visually subtle so it looks like one line */
+.dual-range-track {
+  opacity: 0.6;
+}
+
+/* Top slider only shows its thumb (track mostly hidden) */
+.dual-range-thumb {
+  background: transparent;
+}
+
+

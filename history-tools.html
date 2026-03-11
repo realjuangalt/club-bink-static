@@ -63,38 +63,6 @@
     </main>
 
     <script src="./static.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("generate-history-btn");
-        const status = document.getElementById("history-status");
-        const outputId = "history-output";
-
-        async function generate() {
-          if (status) {
-            status.textContent = "Fetching live BTC data and building JSON…";
-          }
-          try {
-            await exportUpdatedWeeklyHistory(outputId);
-            if (status) {
-              status.textContent = "Done. Copy everything in the box below into the weekly history JSON file.";
-            }
-          } catch (err) {
-            if (status) {
-              status.textContent = "Error while generating history JSON. Check console for details.";
-            }
-            // eslint-disable-next-line no-console
-            console.error(err);
-          }
-        }
-
-        if (btn) {
-          btn.addEventListener("click", generate);
-        }
-
-        // Optionally auto-generate on first load for convenience.
-        generate();
-      });
-    </script>
   </body>
   </html>
 

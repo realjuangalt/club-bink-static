@@ -1,208 +1,52 @@
-// Utility helpers
-function formatCurrency(value, decimals = 2) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
-}
+// DCA calculator & stacker dashboard logic
 
-function formatDateLabel(dateStr) {
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+// Fetch recent BTC/USD daily prices from Blockchain.com's free charts API
+// and normalize into [{ date, price }] to match the existing calculator logic.
+// Docs: https://www.blockchain.com/api/charts_api
+async function fetchLiveBtcHistoryFromBlockchain(days = 365) {
+  const safeDays = Math.min(Math.max(days, 1), 365);
+  const url = `https://api.blockchain.info/charts/market-price?timespan=${safeDays}days&format=json&sampled=true`;
 
-// --- Footer year ---
-document.addEventListener("DOMContentLoaded", () => {
-  const yearEl = document.getElementById("footer-year");
-  if (yearEl) {
-    yearEl.textContent = String(new Date().getFullYear());
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Blockchain.com HTTP ${res.status}`);
   }
-});
-
-// --- Demo forms ---
-document.addEventListener("DOMContentLoaded", () => {
-  const evSubmit = document.getElementById("evangelist-form-submit");
-  const evMsg = document.getElementById("evangelist-form-message");
-  if (evSubmit && evMsg) {
-    evSubmit.addEventListener("click", () => {
-      evMsg.textContent =
-        "Thanks! This is a static demo – hook this form up to your backend, email provider, or form service.";
-    });
+  const data = await res.json();
+  if (!data || !Array.isArray(data.values)) {
+    throw new Error("Unexpected Blockchain.com response structure");
   }
 
-  const stSubmit = document.getElementById("stacker-form-submit");
-  const stMsg = document.getElementById("stacker-form-message");
-  if (stSubmit && stMsg) {
-    stSubmit.addEventListener("click", () => {
-      stMsg.textContent =
-        "Your stacking plan looks great! In the full app this would create a real DCA agreement.";
-    });
-  }
-});
-
-// --- Load data and initialize charts only after DOM & Chart.js are ready ---
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof Chart === "undefined") {
-    // Chart.js not available – silently skip charts
-    return;
-  }
-
-  // For the BTC vs Bink price chart we keep using the bundled historical JSON,
-  // since it's a demo of Bink pricing vs exchanges over a recent window.
-  fetch("./data/btcusd-daily-price-last_quarter.json")
-    .then((r) => r.json())
-    .then((dailyData) => {
-      initBinkPriceChart(dailyData);
-    })
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error("Error loading daily price data", err);
-    });
-
-  // For the DCA calculator and stacker dashboard we pull live BTC/USD data
-  // from a free, no-key provider (Blockchain.com charts API). This runs
-  // entirely client-side and requires no secret.
-  fetchLiveBtcHistoryFromBlockchain()
-    .then((livePriceData) => {
-      initDcaCalculator(livePriceData);
-      initStackerDashboard(livePriceData);
-    })
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error("Error loading live BTC data, falling back to bundled weekly JSON", err);
-      // Fallback to local historical JSON if the public API is rate-limited or unavailable.
-      fetch("./data/btcusd-weekly-price-historical.json")
-        .then((r) => r.json())
-        .then((weeklyData) => {
-          initDcaCalculator(weeklyData);
-          initStackerDashboard(weeklyData);
-        })
-        .catch((innerErr) => {
-          // eslint-disable-next-line no-console
-          console.error("Error loading fallback weekly price data", innerErr);
-        });
-    });
-});
-
-// --- BTC vs Bink vs Local P2P chart (daily data) ---
-function initBinkPriceChart(dailyPriceData) {
-  const canvas = document.getElementById("bink-price-chart");
-  if (!canvas) return;
-
-  const binkPriceData = dailyPriceData.map((item) => {
-    const price = Number(item.price);
+  return data.values.map((point) => {
+    const d = new Date(point.x * 1000);
     return {
-      date: item.date,
-      price,
-      binkPrice: Number((price * 0.98).toFixed(2)),
-      localP2PPrice: Number((price * 0.96).toFixed(2)),
+      date: d.toISOString().slice(0, 10),
+      price: Number(point.y),
     };
   });
-
-  const ctx = canvas.getContext("2d");
-  // eslint-disable-next-line no-new
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: binkPriceData.map((d) => formatDateLabel(d.date)),
-      datasets: [
-        {
-          label: "BTC Price",
-          data: binkPriceData.map((d) => d.price),
-          borderColor: "#FFA500",
-          backgroundColor: "rgba(255,165,0,0.1)",
-          borderWidth: 2,
-          tension: 0.25,
-          pointRadius: 0,
-        },
-        {
-          label: "Bink Price",
-          data: binkPriceData.map((d) => d.binkPrice),
-          borderColor: "#00FF00",
-          backgroundColor: "rgba(0,255,0,0.05)",
-          borderWidth: 2,
-          tension: 0.25,
-          pointRadius: 0,
-        },
-        {
-          label: "Local P2P Price",
-          data: binkPriceData.map((d) => d.localP2PPrice),
-          borderColor: "#4A90E2",
-          backgroundColor: "rgba(74,144,226,0.05)",
-          borderWidth: 2,
-          tension: 0.25,
-          pointRadius: 0,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: "#e5e5e5",
-          },
-        },
-        tooltip: {
-          callbacks: {
-            label(context) {
-              const label = context.dataset.label || "";
-              const value = context.parsed.y;
-              return `${label}: ${formatCurrency(value)}`;
-            },
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "#9ca3af",
-            maxRotation: 0,
-          },
-          grid: {
-            color: "#1f2933",
-          },
-        },
-        y: {
-          ticks: {
-            color: "#9ca3af",
-            callback(value) {
-              return `$${Number(value).toLocaleString()}`;
-            },
-          },
-          grid: {
-            color: "#1f2933",
-          },
-        },
-      },
-    },
-  });
 }
 
-// --- Load Bink price chart only after DOM & Chart.js are ready ---
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof Chart === "undefined") {
-    return;
-  }
+// Downsample a dense series of daily-or-more-frequent points into an
+// approximate weekly series by taking one point every 7 distinct dates.
+function downsampleToApproxWeekly(dailySeries) {
+  if (!dailySeries || dailySeries.length === 0) return [];
 
-  fetch("./data/btcusd-daily-price-last_quarter.json")
-    .then((r) => r.json())
-    .then((dailyData) => {
-      initBinkPriceChart(dailyData);
-    })
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error("Error loading daily price data", err);
-    });
-});
+  const byDate = [];
+  let lastDate = null;
+  dailySeries.forEach((p) => {
+    if (p && p.date && p.price != null) {
+      if (p.date !== lastDate) {
+        byDate.push(p);
+        lastDate = p.date;
+      }
+    }
+  });
+
+  const weekly = [];
+  for (let i = 0; i < byDate.length; i += 7) {
+    weekly.push(byDate[i]);
+  }
+  return weekly;
+}
 
 // --- DCA calculator chart (weekly data) ---
 function initDcaCalculator(priceData) {
@@ -548,7 +392,7 @@ function initDcaCalculator(priceData) {
   }
 }
 
-// --- Stacker dashboard demo (reusing weekly data) ---
+// --- Stacker dashboard demo (reusing same price data) ---
 function initStackerDashboard(priceData) {
   const canvas = document.getElementById("stacker-dashboard-chart");
   const tableBody = document.getElementById("stacker-purchase-table");
@@ -614,7 +458,6 @@ function initStackerDashboard(priceData) {
     profitPctEl.classList.add("text-red-500");
   }
 
-  // Fill recent purchases table (last 5 buy events)
   const purchases = data.filter((_, idx) => idx % 2 === 0).slice(-5).reverse();
   tableBody.innerHTML = "";
   purchases.forEach((t) => {
@@ -725,4 +568,29 @@ function initStackerDashboard(priceData) {
     },
   });
 }
+
+// Attach a DCA bootstrapper on DOMContentLoaded so this file is standalone.
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof Chart === "undefined") return;
+
+  fetchLiveBtcHistoryFromBlockchain()
+    .then((livePriceData) => {
+      initDcaCalculator(livePriceData);
+      initStackerDashboard(livePriceData);
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error("Error loading live BTC data, falling back to bundled weekly JSON", err);
+      fetch("./data/btcusd-weekly-price-historical.json")
+        .then((r) => r.json())
+        .then((weeklyData) => {
+          initDcaCalculator(weeklyData);
+          initStackerDashboard(weeklyData);
+        })
+        .catch((innerErr) => {
+          // eslint-disable-next-line no-console
+          console.error("Error loading fallback weekly price data", innerErr);
+        });
+    });
+});
 
