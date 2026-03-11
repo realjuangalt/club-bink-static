@@ -1,0 +1,25 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Subtle focus style for keyboard users */
+:focus-visible {
+  outline: 2px solid #ffa500;
+  outline-offset: 2px;
+}
+
+/* Basic table styling tweaks for dark theme */
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  white-space: nowrap;
+}
+

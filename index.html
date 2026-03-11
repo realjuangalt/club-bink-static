@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Club Bink - Static Demo</title>
+    <!-- Tailwind via CDN (CSS-only utility layer) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              binkOrange: "#FFA500",
+              binkBg: "#121212",
+              binkCard: "#2A2A2A",
+              binkCardAlt: "#1A1A1A"
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="stylesheet" href="./static.css" />
+  </head>
+  <body class="min-h-screen bg-binkBg text-white">
+    <!-- Site Header -->
+    <header
+      class="border-b border-neutral-800 bg-black/60 backdrop-blur sticky top-0 z-20"
+    >
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="#top" class="flex items-center gap-2">
+          <img
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bink_logo-QKKUxKCfntVUsNeqrqkGv1jipBV2er.webp"
+            alt="Club Bink Logo"
+            class="h-8 w-auto"
+          />
+          <span class="font-semibold tracking-tight">Club Bink</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+          <a href="#evangelists" class="hover:text-binkOrange">Evangelists</a>
+          <a href="#stackers" class="hover:text-binkOrange">Stackers</a>
+          <a href="#dca-calculator" class="hover:text-binkOrange">DCA Calculator</a>
+          <a href="#stacker-dashboard" class="hover:text-binkOrange">Stacker Dashboard</a>
+          <a href="#team" class="hover:text-binkOrange">Team</a>
+        </nav>
+        <a
+          href="#evangelist-sign-up"
+          class="hidden md:inline-flex items-center gap-2 rounded-md bg-binkOrange px-4 py-2 text-sm font-medium text-black hover:bg-[#FF9000] transition-colors"
+        >
+          Become an Evangelist
+        </a>
+      </div>
+    </header>
+
+    <main id="top" class="max-w-6xl mx-auto px-4 py-10 md:py-16">
+      <!-- Hero -->
+      <section class="mb-16 md:mb-24 text-center">
+        <h1
+          class="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+        >
+          Welcome to <span class="text-binkOrange">Club Bink</span>
+        </h1>
+        <p class="mb-4 text-lg text-gray-300 sm:text-xl">
+          Better privacy, better prices, better Bitcoin.
+        </p>
+        <p class="mb-8 mx-auto max-w-2xl text-base sm:text-lg text-gray-400">
+          An open source toolkit for Bitcoin Evangelists to help friends and family
+          stack and hodl sats through regular peer-to-peer DCA trades.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a
+            href="#evangelist-sign-up"
+            class="inline-flex justify-center items-center rounded-md bg-binkOrange px-8 py-3 text-base font-medium text-black hover:bg-[#FF9000] transition-colors"
+          >
+            Get Started
+          </a>
+          <a
+            href="#stackers"
+            class="inline-flex justify-center items-center rounded-md border border-neutral-700 px-8 py-3 text-base font-medium text-white hover:bg-neutral-900 transition-colors"
+          >
+            Learn More
+          </a>
+        </div>
+      </section>
+
+      <!-- Evangelist Features -->
+      <section id="evangelists" class="mb-16 md:mb-24">
+        <h2 class="mb-8 md:mb-12 text-center text-2xl sm:text-3xl font-bold">
+          Built for Bitcoin Evangelists
+        </h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <article class="rounded-lg bg-binkCard p-6 text-center">
+            <div class="mb-4 flex justify-center">
+              <div
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-binkOrange/20"
+              >
+                <span class="text-binkOrange text-2xl font-semibold">🛡️</span>
+              </div>
+            </div>
+            <h3 class="mb-2 text-xl font-semibold">Low Risk</h3>
+            <p class="text-gray-400">Minimize your exposure.</p>
+          </article>
+          <article class="rounded-lg bg-binkCard p-6 text-center">
+            <div class="mb-4 flex justify-center">
+              <div
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-binkOrange/20"
+              >
+                <span class="text-binkOrange text-2xl font-semibold">🤝</span>
+              </div>
+            </div>
+            <h3 class="mb-2 text-xl font-semibold">High Trust</h3>
+            <p class="text-gray-400">Build on existing relationships.</p>
+          </article>
+          <article class="rounded-lg bg-binkCard p-6 text-center">
+            <div class="mb-4 flex justify-center">
+              <div
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-binkOrange/20"
+              >
+                <span class="text-binkOrange text-2xl font-semibold">🕶️</span>
+              </div>
+            </div>
+            <h3 class="mb-2 text-xl font-semibold">Non‑KYC</h3>
+            <p class="text-gray-400">
+              No escrow, no exchange, no privacy leak.
+            </p>
+          </article>
+          <article class="rounded-lg bg-binkCard p-6 text-center">
+            <div class="mb-4 flex justify-center">
+              <div
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-binkOrange/20"
+              >
+                <span class="text-binkOrange text-2xl font-semibold">💰</span>
+              </div>
+            </div>
+            <h3 class="mb-2 text-xl font-semibold">Commission Free</h3>
+            <p class="text-gray-400">Keep more of your Bitcoin.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- DCA Strategy / Explainer -->
+      <section class="mb-16 md:mb-24 bg-binkCard rounded-lg overflow-hidden">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="p-6 md:p-8 lg:p-12">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-6">
+              Help Your Network Become Bitcoin Stackers
+            </h2>
+            <p class="mb-6 text-lg sm:text-xl text-gray-300">
+              As an Evangelist, you can help new Bitcoiners (we call them
+              "Stackers") build their Bitcoin positions through Dollar Cost
+              Averaging (DCA).
+            </p>
+            <div class="space-y-6 text-sm sm:text-base">
+              <article class="flex items-start">
+                <span class="mr-4 text-binkOrange text-xl mt-1">📈</span>
+                <div>
+                  <h3 class="text-lg font-semibold mb-2">
+                    Ideal for Bitcoin's Volatility
+                  </h3>
+                  <p class="text-gray-400">
+                    DCA is well‑suited for Bitcoin's inherent volatility. By
+                    consistently investing fixed amounts at regular intervals, investors
+                    can potentially reduce the impact of short‑term market swings.
+                  </p>
+                </div>
+              </article>
+              <article class="flex items-start">
+                <span class="mr-4 text-binkOrange text-xl mt-1">⏱️</span>
+                <div>
+                  <h3 class="text-lg font-semibold mb-2">
+                    Long‑term Growth Focus
+                  </h3>
+                  <p class="text-gray-400">
+                    DCA allows investors to capitalize on Bitcoin's long‑term growth
+                    potential without the stress of timing the market perfectly.
+                  </p>
+                </div>
+              </article>
+              <article class="flex items-start">
+                <span class="mr-4 text-binkOrange text-xl mt-1">💹</span>
+                <div>
+                  <h3 class="text-lg font-semibold mb-2">Steady Accumulation</h3>
+                  <p class="text-gray-400">
+                    This strategy enables investors to accumulate Bitcoin steadily over
+                    time, building their position gradually and consistently.
+                  </p>
+                </div>
+              </article>
+              <article class="flex items-start">
+                <span class="mr-4 text-binkOrange text-xl mt-1">🧠</span>
+                <div>
+                  <h3 class="text-lg font-semibold mb-2">Disciplined Approach</h3>
+                  <p class="text-gray-400">
+                    DCA provides a disciplined approach that can help overcome emotional
+                    decision‑making, making it ideal for both newcomers and experienced
+                    Bitcoin enthusiasts.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+          <div
+            class="bg-binkCardAlt flex items-center justify-center p-6 md:p-8"
+          >
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-10k28dv2Q86SXMuQwfqjnLYF9fDHED.png"
+              alt="Bitcoin Dollar Cost Average Calculator"
+              class="rounded-lg border border-gray-700 shadow-lg max-w-full h-auto"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- How Club Bink works for Evangelists -->
+      <section class="mb-16 md:mb-24 bg-binkCard rounded-lg overflow-hidden">
+        <div class="grid md:grid-cols-2">
+          <div class="p-6 md:p-8 lg:p-12">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-6">
+              How Club Bink Empowers Bitcoin Evangelists
+            </h2>
+            <p class="text-lg sm:text-xl text-gray-300 mb-4">
+              As an Evangelist, you've already built trust within your community.
+              Club Bink helps you leverage these existing relationships to maximize
+              the value of your Bitcoin network.
+            </p>
+            <p class="text-lg sm:text-xl text-gray-300 mb-4">
+              If you already own Bitcoin and get paid in Bitcoin, Club Bink
+              provides the tools to engage with your network of potential buyers
+              and stackers directly, in a safe, private, and reliable fashion.
+            </p>
+            <ul class="list-none space-y-3 text-gray-400 mb-6 text-sm sm:text-base">
+              <li class="flex items-start">
+                <span class="mr-2 mt-1 text-binkOrange">👥</span>
+                <span>Leverage your existing network of trusted relationships.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2 mt-1 text-binkOrange">₿</span>
+                <span>Facilitate direct sat sales within your local community.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2 mt-1 text-binkOrange">🔁</span>
+                <span>Establish long‑term DCA plans with your trusted contacts.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2 mt-1 text-binkOrange">$</span>
+                <span>Eliminate exchange fees and P2P commissions.</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2 mt-1 text-binkOrange">🔒</span>
+                <span>Enhance privacy and security in your Bitcoin transactions.</span>
+              </li>
+            </ul>
+            <p class="text-gray-400 text-sm sm:text-base">
+              Club Bink doesn't create your network – it helps you unlock the full
+              potential of your existing relationships. Our secure, commission‑free
+              environment for P2P Bitcoin transactions, combined with tailored
+              educational content, makes it easy to introduce Bitcoin to your
+              trusted circle and nurture an organically growing local Bitcoin
+              community.
+            </p>
+          </div>
+          <div
+            class="bg-binkCardAlt flex items-center justify-center p-6 md:p-8"
+          >
+            <div class="relative w-full max-w-md aspect-square">
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-binkOrange to-[#FF4500] rounded-full opacity-20 animate-pulse"
+              ></div>
+              <div
+                class="absolute inset-4 bg-binkCard rounded-full flex items-center justify-center"
+              >
+                <span class="text-binkOrange text-6xl">🤝</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stacker journey -->
+      <section id="stackers" class="mb-16 md:mb-24 bg-binkCardAlt rounded-lg">
+        <div class="px-4 md:px-8 py-10 md:py-14">
+          <h2 class="text-2xl sm:text-3xl font-bold mb-8 text-center">
+            Guide Your Network's Journey from Curious to Stacker
+          </h2>
+          <div class="grid md:grid-cols-2 gap-10 items-center">
+            <div class="space-y-6 text-sm sm:text-base">
+              <h3
+                class="text-xl sm:text-2xl font-semibold mb-4 text-binkOrange"
+              >
+                Your Role as a Bitcoin Evangelist
+              </h3>
+              <article class="flex items-start">
+                <span class="mr-4 mt-1 text-binkOrange text-xl">🔁</span>
+                <div>
+                  <h4 class="text-lg font-medium mb-2">
+                    Set Up Long‑term DCA Plans
+                  </h4>
+                  <p class="text-gray-400">
+                    Help your network establish personalized plans to regularly invest
+                    in Bitcoin. Club Bink streamlines the process by scheduling
+                    trades, notifying both parties, calculating prices and amounts per
+                    trade relationship, and tracking progress over time.
+                  </p>
+                </div>
+              </article>
+              <article class="flex items-start">
+                <span class="mr-4 mt-1 text-binkOrange text-xl">💬</span>
+                <div>
+                  <h4 class="text-lg font-medium mb-2">
+                    Facilitate Easy Communication
+                  </h4>
+                  <p class="text-gray-400">
+                    Leverage WhatsApp integration (with future Nostr support
+                    planned) to reach potential Stackers where they already are,
+                    keeping them informed and engaged with Bitcoin‑only education.
+                  </p>
+                </div>
+              </article>
+              <article class="flex items-start">
+                <span class="mr-4 mt-1 text-binkOrange text-xl">📊</span>
+                <div>
+                  <h4 class="text-lg font-medium mb-2">
+                    Track Stacking Progress Together
+                  </h4>
+                  <p class="text-gray-400">
+                    Stackers get a dedicated dashboard to monitor their DCA progress
+                    over time – reinforcing their commitment to the journey.
+                  </p>
+                </div>
+              </article>
+            </div>
+            <div class="relative mt-6 md:mt-0">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bink_landing_background01-ZDJzSO6B7VrTGn4mhjwfKxkwlNrY0o.webp"
+                alt="Bitcoin DCA Progress Visualization"
+                class="rounded-lg border border-gray-700 shadow-lg relative z-10 max-w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive BTC vs Bink price chart -->
+      <section id="price-chart" class="mb-16 md:mb-24">
+        <h2 class="mb-4 text-2xl sm:text-3xl font-bold text-center">
+          BTC vs Local P2P vs Bink Price
+        </h2>
+        <p class="mb-6 text-center text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+          This demo chart uses the same underlying price data as the original app to
+          visualize how Bink can offer better effective prices compared to typical
+          exchange or local P2P rates.
+        </p>
+        <div
+          class="bg-binkCard rounded-lg border border-neutral-800 p-4 md:p-6"
+        >
+          <canvas id="bink-price-chart" class="w-full h-[320px]"></canvas>
+        </div>
+      </section>
+
+      <!-- DCA Calculator -->
+      <section id="dca-calculator" class="mb-16 md:mb-24">
+        <h2 class="mb-4 text-2xl sm:text-3xl font-bold text-center">
+          Bitcoin DCA Calculator
+        </h2>
+        <p class="mb-8 text-center text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
+          Experiment with different weekly amounts, frequencies, and time ranges to
+          see how a simple DCA strategy into Bitcoin might have performed in the
+          past.
+        </p>
+        <div
+          class="bg-binkCard rounded-lg border border-neutral-800 p-4 sm:p-6 lg:p-8 space-y-6"
+        >
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label
+                for="weekly-amount"
+                class="block text-sm font-medium text-gray-200"
+              >
+                Weekly Investment (USD)
+              </label>
+              <input
+                id="weekly-amount"
+                type="number"
+                value="100"
+                min="0"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                for="investment-frequency"
+                class="block text-sm font-medium text-gray-200"
+              >
+                Investment Frequency (weeks)
+              </label>
+              <input
+                id="investment-frequency"
+                type="number"
+                value="2"
+                min="1"
+                step="1"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              for="time-range"
+              id="time-range-label"
+              class="block text-sm font-medium text-gray-200"
+            >
+              Time Range
+            </label>
+            <input
+              id="time-range"
+              type="range"
+              min="1"
+              max="100"
+              value="48"
+              class="w-full accent-binkOrange"
+            />
+          </div>
+
+          <div class="flex items-center justify-end gap-3 text-xs sm:text-sm">
+            <span class="text-gray-400">Scale:</span>
+            <button
+              type="button"
+              id="scale-linear"
+              class="px-3 py-1 rounded-full border border-neutral-600 text-gray-200 text-xs sm:text-sm bg-binkCardAlt"
+            >
+              Linear
+            </button>
+            <button
+              type="button"
+              id="scale-log"
+              class="px-3 py-1 rounded-full border border-transparent text-gray-400 text-xs sm:text-sm hover:border-neutral-600"
+            >
+              Log
+            </button>
+          </div>
+
+          <div class="bg-binkCardAlt rounded-lg border border-neutral-800 p-3 sm:p-4">
+            <canvas id="dca-chart" class="w-full h-[320px]"></canvas>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="bg-binkCardAlt rounded-lg p-3">
+              <p class="text-xs text-gray-400 mb-1">Total Invested</p>
+              <p
+                id="metric-invested"
+                class="text-lg sm:text-xl font-semibold text-white"
+              >
+                $0
+              </p>
+            </div>
+            <div class="bg-binkCardAlt rounded-lg p-3">
+              <p class="text-xs text-gray-400 mb-1">Current Value</p>
+              <p
+                id="metric-value"
+                class="text-lg sm:text-xl font-semibold text-white"
+              >
+                $0
+              </p>
+            </div>
+            <div class="bg-binkCardAlt rounded-lg p-3">
+              <p class="text-xs text-gray-400 mb-1">Total BTC</p>
+              <p
+                id="metric-btc"
+                class="text-lg sm:text-xl font-semibold text-white"
+              >
+                0 BTC
+              </p>
+            </div>
+            <div class="bg-binkCardAlt rounded-lg p-3">
+              <p class="text-xs text-gray-400 mb-1">Return</p>
+              <p
+                id="metric-return"
+                class="text-lg sm:text-xl font-semibold text-green-500"
+              >
+                0%
+              </p>
+            </div>
+          </div>
+
+          <div class="text-center pt-2">
+            <a
+              href="#stacker-sign-up"
+              class="inline-flex items-center justify-center rounded-md bg-binkOrange px-8 py-3 text-base font-medium text-black hover:bg-[#FF9000] transition-colors"
+            >
+              Sign Up as a Stacker
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stacker dashboard demo -->
+      <section id="stacker-dashboard" class="mb-16 md:mb-24">
+        <h2 class="mb-4 text-2xl sm:text-3xl font-bold text-center">
+          Stacker Dashboard Demo
+        </h2>
+        <p class="mb-8 text-center text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
+          A simplified static preview of how a Stacker can monitor DCA progress
+          with high‑level metrics, a performance chart, and recent purchase history.
+        </p>
+        <div class="grid lg:grid-cols-3 gap-6 items-start">
+          <div class="lg:col-span-2 space-y-4">
+            <div
+              class="bg-binkCard rounded-lg border border-neutral-800 p-4 md:p-6"
+            >
+              <canvas id="stacker-dashboard-chart" class="w-full h-[260px]"></canvas>
+            </div>
+            <div class="bg-binkCard rounded-lg border border-neutral-800 p-4">
+              <h3 class="text-sm font-semibold mb-3 text-gray-200">
+                Recent DCA Purchases (Demo)
+              </h3>
+              <div class="overflow-x-auto text-xs sm:text-sm">
+                <table class="min-w-full text-left">
+                  <thead class="text-gray-400 border-b border-neutral-700">
+                    <tr>
+                      <th class="py-2 pr-4">Date</th>
+                      <th class="py-2 pr-4">Amount (USD)</th>
+                      <th class="py-2 pr-4">BTC Price</th>
+                      <th class="py-2 pr-4">BTC Amount</th>
+                      <th class="py-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stacker-purchase-table" class="text-gray-200"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-binkCard rounded-lg p-4">
+                <p class="text-xs text-gray-400 mb-1">Total Invested</p>
+                <p
+                  id="stacker-total-invested"
+                  class="text-lg sm:text-xl font-semibold"
+                >
+                  $0
+                </p>
+              </div>
+              <div class="bg-binkCard rounded-lg p-4">
+                <p class="text-xs text-gray-400 mb-1">Current Value</p>
+                <p
+                  id="stacker-current-value"
+                  class="text-lg sm:text-xl font-semibold"
+                >
+                  $0
+                </p>
+              </div>
+              <div class="bg-binkCard rounded-lg p-4">
+                <p class="text-xs text-gray-400 mb-1">Profit / Loss</p>
+                <p
+                  id="stacker-profit"
+                  class="text-lg sm:text-xl font-semibold text-green-500"
+                >
+                  $0
+                </p>
+              </div>
+              <div class="bg-binkCard rounded-lg p-4">
+                <p class="text-xs text-gray-400 mb-1">Return</p>
+                <p
+                  id="stacker-profit-pct"
+                  class="text-lg sm:text-xl font-semibold text-green-500"
+                >
+                  0%
+                </p>
+              </div>
+            </div>
+            <div class="bg-binkCard rounded-lg p-4 space-y-2 text-sm">
+              <h3 class="font-semibold text-gray-100">
+                Demo Evangelist & Stacker Flows
+              </h3>
+              <p class="text-gray-400 text-xs sm:text-sm">
+                In the full app, Evangelists create clubs, invite Stackers, and
+                coordinate recurring Bitcoin purchases. This static page approximates
+                that experience with read‑only dashboard views and calculators.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Simple evangelist / stacker sign-up CTAs -->
+      <section
+        id="evangelist-sign-up"
+        class="mb-16 md:mb-24 grid md:grid-cols-2 gap-8"
+      >
+        <div class="bg-binkCard rounded-lg border border-neutral-800 p-6 space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold">Evangelist Sign Up</h2>
+          <p class="text-sm sm:text-base text-gray-300">
+            This static form mirrors the intent of the original flow and can be
+            wired to any backend or form provider you prefer.
+          </p>
+          <form class="space-y-4" onsubmit="return false;">
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="evangelist-name"
+                >Name</label
+              >
+              <input
+                id="evangelist-name"
+                type="text"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="Satoshi Nakamoto"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="evangelist-email"
+                >Email</label
+              >
+              <input
+                id="evangelist-email"
+                type="email"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="club-name"
+                >Club Name</label
+              >
+              <input
+                id="club-name"
+                type="text"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="My Local Bitcoin Club"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full rounded-md bg-binkOrange px-4 py-2.5 text-sm font-medium text-black hover:bg-[#FF9000] transition-colors"
+              id="evangelist-form-submit"
+            >
+              Submit (Demo Only)
+            </button>
+            <p
+              id="evangelist-form-message"
+              class="text-xs text-center text-gray-400"
+            ></p>
+          </form>
+        </div>
+
+        <div
+          id="stacker-sign-up"
+          class="bg-binkCard rounded-lg border border-neutral-800 p-6 space-y-4"
+        >
+          <h2 class="text-xl sm:text-2xl font-bold">Stacker Sign Up</h2>
+          <p class="text-sm sm:text-base text-gray-300">
+            Join an Evangelist you trust, define a DCA plan, and start stacking
+            sats on autopilot.
+          </p>
+          <form class="space-y-4" onsubmit="return false;">
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="stacker-name"
+                >Name</label
+              >
+              <input
+                id="stacker-name"
+                type="text"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="Jane Doe"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="stacker-email"
+                >Email</label
+              >
+              <input
+                id="stacker-email"
+                type="email"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-sm text-gray-200" for="weekly-budget"
+                >Weekly Budget (USD)</label
+              >
+              <input
+                id="weekly-budget"
+                type="number"
+                class="w-full rounded-md bg-binkCardAlt border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-binkOrange"
+                placeholder="100"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full rounded-md bg-binkOrange px-4 py-2.5 text-sm font-medium text-black hover:bg-[#FF9000] transition-colors"
+              id="stacker-form-submit"
+            >
+              Submit (Demo Only)
+            </button>
+            <p
+              id="stacker-form-message"
+              class="text-xs text-center text-gray-400"
+            ></p>
+          </form>
+        </div>
+      </section>
+
+      <!-- Team -->
+      <section id="team" class="mb-16 md:mb-24">
+        <h2 class="mb-8 md:mb-12 text-center text-2xl sm:text-3xl font-bold">
+          Our Team
+        </h2>
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <article class="text-center">
+            <div
+              class="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 overflow-hidden rounded-full bg-binkCard"
+            >
+              <img
+                src="https://robohash.org/1?set=set4&size=500x500"
+                alt="Juan Galt"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <h3 class="mb-1 text-lg sm:text-xl font-semibold">Juan Galt</h3>
+            <p class="mb-3 text-sm text-gray-400">Project lead</p>
+          </article>
+          <article class="text-center">
+            <div
+              class="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 overflow-hidden rounded-full bg-binkCard"
+            >
+              <img
+                src="https://robohash.org/2?set=set4&size=500x500"
+                alt="Brenda Reyes"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <h3 class="mb-1 text-lg sm:text-xl font-semibold">Brenda Reyes</h3>
+            <p class="mb-3 text-sm text-gray-400">Graphic Design</p>
+            <div class="flex justify-center gap-4 text-gray-400 text-sm">
+              <a
+                href="https://www.linkedin.com/in/brenn-design"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-binkOrange"
+                >LinkedIn</a
+              >
+            </div>
+          </article>
+          <article class="text-center">
+            <div
+              class="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 overflow-hidden rounded-full bg-binkCard"
+            >
+              <img
+                src="https://robohash.org/3?set=set4&size=500x500"
+                alt="Ivan Robles"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <h3 class="mb-1 text-lg sm:text-xl font-semibold">Ivan Robles</h3>
+            <p class="mb-3 text-sm text-gray-400">UI Advisor</p>
+            <div class="flex justify-center gap-4 text-gray-400 text-sm">
+              <a
+                href="https://github.com/Sharmaz"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-binkOrange"
+                >GitHub</a
+              >
+              <a
+                href="https://x.com/elSharmaz"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-binkOrange"
+                >Twitter</a
+              >
+              <a
+                href="https://www.linkedin.com/in/ivanroblesalonso/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-binkOrange"
+                >LinkedIn</a
+              >
+            </div>
+          </article>
+          <article class="text-center">
+            <div
+              class="mx-auto mb-4 h-32 w-32 sm:h-40 sm:w-40 overflow-hidden rounded-full bg-binkCard"
+            >
+              <img
+                src="https://robohash.org/4?set=set4&size=500x500"
+                alt="Robert Allen"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <h3 class="mb-1 text-lg sm:text-xl font-semibold">Robert Allen</h3>
+            <p class="mb-3 text-sm text-gray-400">Back End Advisor</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-binkCard py-8 mt-8">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-wrap justify-between gap-6">
+          <div class="w-full sm:w-1/2 md:w-1/3 space-y-2">
+            <div class="flex items-center gap-2">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bink_logo-QKKUxKCfntVUsNeqrqkGv1jipBV2er.webp"
+                alt="Club Bink Logo"
+                class="h-8 w-auto"
+              />
+              <h3 class="text-lg font-semibold">Club Bink</h3>
+            </div>
+            <p class="text-sm text-gray-400">
+              Better privacy, better prices, better Bitcoin.
+            </p>
+          </div>
+          <div class="w-full sm:w-1/2 md:w-1/3">
+            <h3 class="mb-2 text-lg font-semibold">Quick Links</h3>
+            <ul class="space-y-1 text-sm text-gray-400">
+              <li><a href="#dca-calculator" class="hover:text-white">Stacker Demo</a></li>
+              <li><a href="#stacker-dashboard" class="hover:text-white">Evangelist Demo</a></li>
+              <li><a href="#evangelist-sign-up" class="hover:text-white">Create a Club</a></li>
+            </ul>
+          </div>
+          <div class="w-full sm:w-1/2 md:w-1/3">
+            <h3 class="mb-2 text-lg font-semibold">Connect</h3>
+            <div class="flex gap-4 text-gray-400 text-sm">
+              <a href="https://github.com/realjuangalt/Club-Bink-Demo" class="hover:text-white">GitHub</a>
+              <a href="https://twitter.com" class="hover:text-white">Twitter</a>
+              <a href="https://linkedin.com" class="hover:text-white">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+        <p class="mt-6 text-center text-xs text-gray-500">
+          © <span id="footer-year"></span> Club Bink. All rights reserved. Static
+          demo for GitHub Pages.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Chart.js for non‑React charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./static.js"></script>
+  </body>
+  </html>
+
