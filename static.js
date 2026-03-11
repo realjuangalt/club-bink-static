@@ -54,21 +54,157 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Fetch both JSON files in parallel
-  Promise.all([
-    fetch("./data/btcusd-daily-price-last_quarter.json").then((r) => r.json()),
-    fetch("./data/btcusd-weekly-price-historical.json").then((r) => r.json()),
-  ])
-    .then(([dailyData, weeklyData]) => {
+  // For the BTC vs Bink price chart we keep using the bundled historical JSON,
+  // since it's a demo of Bink pricing vs exchanges over a recent window.
+  fetch("./data/btcusd-daily-price-last_quarter.json")
+    .then((r) => r.json())
+    .then((dailyData) => {
       initBinkPriceChart(dailyData);
-      initDcaCalculator(weeklyData);
-      initStackerDashboard(weeklyData);
     })
     .catch((err) => {
       // eslint-disable-next-line no-console
-      console.error("Error loading price data for charts", err);
+      console.error("Error loading daily price data", err);
+    });
+
+  // For the DCA calculator and stacker dashboard we pull live BTC/USD data
+  // from a free, no-key provider (Blockchain.com charts API). This runs
+  // entirely client-side and requires no secret.
+  fetchLiveBtcHistoryFromBlockchain()
+    .then((livePriceData) => {
+      initDcaCalculator(livePriceData);
+      initStackerDashboard(livePriceData);
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error("Error loading live BTC data, falling back to bundled weekly JSON", err);
+      // Fallback to local historical JSON if the public API is rate-limited or unavailable.
+      fetch("./data/btcusd-weekly-price-historical.json")
+        .then((r) => r.json())
+        .then((weeklyData) => {
+          initDcaCalculator(weeklyData);
+          initStackerDashboard(weeklyData);
+        })
+        .catch((innerErr) => {
+          // eslint-disable-next-line no-console
+          console.error("Error loading fallback weekly price data", innerErr);
+        });
     });
 });
+
+// === DCA core data helpers ===
+
+// Fetch recent BTC/USD daily prices from Blockchain.com's free charts API
+// and normalize into [{ date, price }] to match the existing calculator logic.
+// Docs: https://www.blockchain.com/api/charts_api
+async function fetchLiveBtcHistoryFromBlockchain(days = 365) {
+  // Blockchain.com market-price chart supports JSON, daily sampling, and no API key.
+  // We request up to `days` of history; the API's "timespan" parameter accepts strings
+  // like "365days", "2years", etc. Here we clamp between 1 and 365 days.
+  const safeDays = Math.min(Math.max(days, 1), 365);
+  const url = `https://api.blockchain.info/charts/market-price?timespan=${safeDays}days&format=json&sampled=true`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Blockchain.com HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  if (!data || !Array.isArray(data.values)) {
+    throw new Error("Unexpected Blockchain.com response structure");
+  }
+
+  // values: [{ x: timestamp_seconds, y: price }, ...]
+  return data.values.map((point) => {
+    const d = new Date(point.x * 1000);
+    return {
+      date: d.toISOString().slice(0, 10),
+      price: Number(point.y),
+    };
+  });
+}
+
+// Downsample a dense series of daily-or-more-frequent points into an
+// approximate weekly series by taking one point every 7 distinct dates.
+function downsampleToApproxWeekly(dailySeries) {
+  if (!dailySeries || dailySeries.length === 0) return [];
+
+  const byDate = [];
+  let lastDate = null;
+  dailySeries.forEach((p) => {
+    if (p && p.date && p.price != null) {
+      if (p.date !== lastDate) {
+        byDate.push(p);
+        lastDate = p.date;
+      }
+    }
+  });
+
+  const weekly = [];
+  for (let i = 0; i < byDate.length; i += 7) {
+    weekly.push(byDate[i]);
+  }
+  return weekly;
+}
+
+// Developer helper: call this from the browser console to generate an updated
+// weekly price history JSON (merged local + live CoinGecko), which you can then
+// paste back into data/btcusd-weekly-price-historical.json in the repo.
+//
+// Example in console:
+//   window.exportUpdatedWeeklyHistory().then(() => {})
+//
+async function exportUpdatedWeeklyHistory(targetElementId) {
+  try {
+    const [existingWeekly, liveDense] = await Promise.all([
+      fetch("./data/btcusd-weekly-price-historical.json").then((r) => r.json()),
+      // Try to fetch up to 365 days of recent data for an update slice.
+      fetchLiveBtcHistoryFromBlockchain(365),
+    ]);
+
+    if (!Array.isArray(existingWeekly) || existingWeekly.length === 0) {
+      // eslint-disable-next-line no-console
+      console.warn("Existing weekly series is empty or invalid; exporting live-only weekly data.");
+      const liveWeeklyOnly = downsampleToApproxWeekly(liveDense);
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(liveWeeklyOnly, null, 2));
+      return;
+    }
+
+    const lastExisting = existingWeekly[existingWeekly.length - 1];
+    const lastDateStr = lastExisting.date;
+    const lastTime = new Date(`${lastDateStr}T00:00:00Z`).getTime();
+
+    const newSlice = liveDense.filter((p) => {
+      const t = new Date(`${p.date}T00:00:00Z`).getTime();
+      return t > lastTime;
+    });
+
+    const weeklyUpdates = downsampleToApproxWeekly(newSlice);
+    const merged = existingWeekly.concat(weeklyUpdates);
+    const json = JSON.stringify(merged, null, 2);
+
+    if (targetElementId) {
+      const el = document.getElementById(targetElementId);
+      if (el) {
+        if ("value" in el) {
+          el.value = json;
+        } else {
+          el.textContent = json;
+        }
+        return;
+      }
+    }
+
+    // Fallback: log to console.
+    // eslint-disable-next-line no-console
+    console.log(
+      "// Copy this JSON into data/btcusd-weekly-price-historical.json in your repo:\n" +
+        json
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("Failed to export updated weekly history", err);
+  }
+}
 
 // --- BTC vs Bink vs Local P2P chart (daily data) ---
 function initBinkPriceChart(dailyPriceData) {
